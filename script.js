@@ -23,10 +23,11 @@ const addons = {
 
 // DOM Elements
 const pages = document.querySelectorAll('.form-step');
+const thankYouScreen = document.getElementById('thank-you-screen');
 const indicators = document.querySelectorAll('.step-indicator');
 const nextButton = document.getElementById('next-button');
 const backButton = document.getElementById('back-button');
-const navBar = document.getElementById('navigation-bar');
+const formFooter = document.getElementById('form-footer');
 const billingToggle = document.getElementById('billing-toggle');
 
 const nameInput = document.querySelector('input[name="userName"]');
@@ -55,21 +56,21 @@ function showStep(step) {
     page.classList.toggle('active', isActive);
   });
 
+  if (thankYouScreen) {
+    thankYouScreen.classList.toggle('active', step === 5);
+  }
+
   indicators.forEach(indicator => {
     const stepNum = Number(indicator.dataset.step);
-    // When step is 5 (Thank you), Step 4 remains highlighted
+    // When step 5 (Thank you), step 4 stays highlighted in sidebar
     const isActive = (step <= 4 && stepNum === step) || (step === 5 && stepNum === 4);
     indicator.classList.toggle('active', isActive);
-    const numEl = indicator.querySelector('.step-number');
-    if (numEl) {
-      numEl.classList.toggle('active', isActive);
-    }
   });
 
   if (step === 5) {
-    if (navBar) navBar.style.display = 'none';
+    if (formFooter) formFooter.style.display = 'none';
   } else {
-    if (navBar) navBar.style.display = 'flex';
+    if (formFooter) formFooter.style.display = 'flex';
     backButton.hidden = (step === 1);
     nextButton.hidden = false;
     nextButton.textContent = (step === 4) ? 'Confirm' : 'Next Step';
@@ -165,7 +166,7 @@ function updatePlanPrices() {
   if (activeBillingLabel) activeBillingLabel.classList.add('active');
 
   if (billingToggle) {
-    billingToggle.setAttribute('aria-checked', String(state.yearly));
+    billingToggle.setAttribute('aria-pressed', String(state.yearly));
     billingToggle.classList.toggle('yearly', state.yearly);
   }
 
@@ -266,7 +267,7 @@ document.querySelectorAll('.addon_card').forEach(card => {
   });
 });
 
-// Billing period switch
+// Billing toggle switch
 if (billingToggle) {
   billingToggle.addEventListener('click', () => {
     state.yearly = !state.yearly;
